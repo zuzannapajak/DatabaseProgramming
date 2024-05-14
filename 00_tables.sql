@@ -55,11 +55,17 @@ CREATE TABLE service_steps (
     input_definition CLOB CHECK (input_definition IS JSON)
 );
 
-CREATE TABLE service_step_dependencies (
-    service_step_id INT REFERENCES service_steps(id) NOT NULL,
-    depends_on INT REFERENCES service_steps(id),
+CREATE TABLE service_nodes (
+    id INT PRIMARY KEY,
     service_id INT REFERENCES services(id) NOT NULL,
-    PRIMARY KEY (service_step_id, depends_on, service_id)
+    service_step_id INT REFERENCES service_steps(id) NOT NULL
+);
+
+-- check in trigger if nodes are from the same service
+CREATE TABLE service_node_dependencies (
+    dependent_node_id INT REFERENCES service_nodes(id) NOT NULL,
+    dependency_node_id INT REFERENCES service_nodes(id) NOT NULL,
+    PRIMARY KEY (dependent_node_id, dependency_node_id)
 );
 
 -- orders
