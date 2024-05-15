@@ -5,9 +5,15 @@ CREATE TABLE users (
     role VARCHAR2(5) NOT NULL CHECK (role IN ('admin', 'basic')),
     first_name VARCHAR2(50),
     last_name VARCHAR2(50),
-    email VARCHAR2(100) NOT NULL,
-    phone_number VARCHAR2(12)
+    email VARCHAR2(100) NOT NULL UNIQUE,
+    phone_number VARCHAR2(12) UNIQUE
 );
+
+CREATE INDEX idx_users_email ON users (email);
+
+CREATE SEQUENCE users_id_seq
+  START WITH 100
+  INCREMENT BY 1;
 
 -- departments
 
@@ -16,8 +22,12 @@ CREATE TABLE departments (
     name VARCHAR2(255) NOT NULL
 );
 
+CREATE SEQUENCE departments_id_seq
+  START WITH 100
+  INCREMENT BY 1;
+
 CREATE TABLE employees (
-    id INT PRIMARY KEY REFERENCES users(id),
+    user_id INT PRIMARY KEY REFERENCES users(id),
     department_id INT REFERENCES users(id) NOT NULL,
     salary NUMBER(10, 2) DEFAULT 0 NOT NULL
 );
@@ -29,6 +39,10 @@ CREATE TABLE companies (
     name VARCHAR2(255) NOT NULL,
     nip INT NOT NULL
 );
+
+CREATE SEQUENCE companies_id_seq
+  START WITH 100
+  INCREMENT BY 1;
 
 CREATE TABLE company_users (
     user_id INT REFERENCES users(id) NOT NULL,
@@ -47,6 +61,10 @@ CREATE TABLE services (
     price NUMBER(10, 2) DEFAULT 0 NOT NULL
 );
 
+CREATE SEQUENCE services_id_seq
+  START WITH 100
+  INCREMENT BY 1;
+
 CREATE TABLE service_steps (
     id INT PRIMARY KEY,
     name VARCHAR2(255) NOT NULL,
@@ -55,13 +73,20 @@ CREATE TABLE service_steps (
     input_definition CLOB CHECK (input_definition IS JSON)
 );
 
+CREATE SEQUENCE service_steps_id_seq
+  START WITH 100
+  INCREMENT BY 1;
+
 CREATE TABLE service_nodes (
     id INT PRIMARY KEY,
     service_id INT REFERENCES services(id) NOT NULL,
     service_step_id INT REFERENCES service_steps(id) NOT NULL
 );
 
--- check in trigger if nodes are from the same service
+CREATE SEQUENCE service_nodes_id_seq
+  START WITH 100
+  INCREMENT BY 1;
+
 CREATE TABLE service_node_dependencies (
     dependent_node_id INT REFERENCES service_nodes(id) NOT NULL,
     dependency_node_id INT REFERENCES service_nodes(id) NOT NULL,
@@ -74,30 +99,30 @@ CREATE TABLE orders (
     id INT PRIMARY KEY,
     service_id INT REFERENCES services(id),
     company_id INT REFERENCES companies(id),
-    created_at TIMESTAMP NOT NULL DEFAULT SYSTIMESTAMP
+    created_at TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL
 );
+
+CREATE INDEX idx_orders_company_id ON orders (company_id);
+
+CREATE SEQUENCE orders_id_seq
+  START WITH 100
+  INCREMENT BY 1;
 
 -- tasks
 
 CREATE TABLE tasks (
     id INT PRIMARY KEY,
-    service_step_id INT REFERENCES service_steps(id) NOT NULL,
-    status VARCHAR2(15) NOT NULL CHECK (status IN ('blocked', 'to_do', 'in_progress', 'hold', 'cancelled', 'failed', 'done')),
+    created_at TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
+    service_node_id INT REFERENCES service_nodes(id) NOT NULL,
+    status VARCHAR2(15) NOT NULL CHECK (status IN ('to_do', 'in_progress', 'hold', 'cancelled', 'done')),
     status_changed_at TIMESTAMP,
     order_id INT REFERENCES orders(id) NOT NULL,
     assignee INT REFERENCES users(id),
     input_data CLOB CHECK (input_data IS JSON)
 );
 
-CREATE OR REPLACE VIEW task_dependencies AS
-SELECT
-    t1.id AS task_id,
-    t2.id AS depends_on
-FROM
-    tasks t1
-JOIN
-    service_step_dependencies ssd ON t1.service_step_id = ssd.service_step_id
-JOIN
-    tasks t2 ON ssd.depends_on = t2.service_step_id
-WHERE
-    t1.order_id = t2.order_id;
+CREATE INDEX idx_tasks_order_id ON tasks (order_id);
+
+CREATE SEQUENCE tasks_id_seq
+  START WITH 100
+  INCREMENT BY 1;
