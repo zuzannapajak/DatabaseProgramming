@@ -157,3 +157,61 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('An unexpected error occurred: ' || SQLERRM);
         ROLLBACK;
 END company_summary;
+
+-- only add companies with unique NIP number
+CREATE OR REPLACE PROCEDURE add_company(
+    p_name IN companies.name%TYPE,
+    p_nip IN companies.nip%TYPE
+) IS
+    nip_count INT;
+    invalid_nip EXCEPTION;
+BEGIN
+    -- Validate NIP uniqueness
+    SELECT COUNT(*)
+    INTO nip_count
+    FROM companies
+    WHERE nip = p_nip;
+
+    IF nip_count > 0 THEN
+        RAISE invalid_nip;
+    END IF;
+
+    -- Insert the new company
+    INSERT INTO companies (id, name, nip)
+    VALUES (companies_id_seq.NEXTVAL, p_name, p_nip);
+    
+    COMMIT;
+EXCEPTION
+    WHEN invalid_nip THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Company with this NIP already exists.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END add_company;
+
+-- only add the correct status to a task
+CREATE OR REPLACE PROCEDURE update_task_status(
+    p_task_id IN tasks.id%TYPE,
+    p_new_status IN tasks.status%TYPE
+) IS
+    invalid_status EXCEPTION;
+BEGIN
+    -- Validate status
+    IF p_new_status NOT IN ('to_do', 'in_progress', 'hold', 'cancelled', 'done') THEN
+        RAISE invalid_status;
+    END IF;
+
+    -- Update the task's status
+    UPDATE tasks
+    SET status = p_new_status,
+        status_changed_at = SYSTIMESTAMP
+    WHERE id = p_task_id;
+    
+    COMMIT;
+EXCEPTION
+    WHEN invalid_status THEN
+        RAISE_APPLICATION_ERROR(-20005, 'Invalid status specified.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END update_task_status;

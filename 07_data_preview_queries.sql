@@ -71,3 +71,35 @@ SELECT u.first_name, u.last_name,
 FROM users u
 LEFT JOIN tasks t ON u.id = t.assignee
 GROUP BY u.first_name, u.last_name;
+
+-- Query 12: List all departments with their total salary expenditure
+SELECT d.name AS department_name, SUM(e.salary) AS total_salary_expenditure
+FROM departments d
+JOIN employees e ON d.id = e.department_id
+GROUP BY d.name;
+
+-- Query 13: Find all users who are assigned tasks in the 'in_progress' status
+SELECT u.first_name, u.last_name, t.id AS task_id, t.status
+FROM users u
+JOIN tasks t ON u.id = t.assignee
+WHERE t.status = 'in_progress';
+
+-- Query 14: Get the total number of services offered by each company
+SELECT c.name AS company_name, COUNT(s.id) AS total_services
+FROM companies c
+JOIN orders o ON c.id = o.company_id
+JOIN services s ON o.service_id = s.id
+GROUP BY c.name;
+
+-- Query 15: List all tasks along with the names of the services they are part of
+SELECT t.id AS task_id, t.status, s.name AS service_name
+FROM tasks t
+JOIN service_nodes sn ON t.service_node_id = sn.id
+JOIN services s ON sn.service_id = s.id;
+
+-- Query 16: Find the total revenue generated from orders for each company
+SELECT c.name AS company_name, SUM(s.price) AS total_revenue
+FROM companies c
+JOIN orders o ON c.id = o.company_id
+JOIN services s ON o.service_id = s.id
+GROUP BY c.name;
