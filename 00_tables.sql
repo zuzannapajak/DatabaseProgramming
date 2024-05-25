@@ -37,7 +37,7 @@ CREATE TABLE employees (
 CREATE TABLE companies (
     id INT PRIMARY KEY,
     name VARCHAR2(255) NOT NULL,
-    nip INT NOT NULL
+    nip INT NOT NULL UNIQUE
 );
 
 CREATE SEQUENCE companies_id_seq
