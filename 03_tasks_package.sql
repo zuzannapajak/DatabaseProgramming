@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE tasks AS
+CREATE OR REPLACE PACKAGE tasks_pkg AS
     PROCEDURE add_task(
         p_service_node_id IN tasks.service_node_id%TYPE,
         p_status IN tasks.status%TYPE,
@@ -26,9 +26,9 @@ CREATE OR REPLACE PACKAGE tasks AS
     -- Calculates average completion time for tasks for a given department or all tasks if p_department_id is null
    FUNCTION calculate_avg_completion_time(p_department_id IN departments.id%TYPE) RETURN NUMBER;
 
-END tasks;
+END tasks_pkg;
 
-CREATE OR REPLACE PACKAGE BODY tasks AS 
+CREATE OR REPLACE PACKAGE BODY tasks_pkg AS 
 
     PROCEDURE add_task(
         p_service_node_id IN tasks.service_node_id%TYPE,
@@ -39,7 +39,7 @@ CREATE OR REPLACE PACKAGE BODY tasks AS
     ) IS
     BEGIN
         INSERT INTO tasks (id, created_at, service_node_id, status, status_changed_at, order_id, assignee, input_data)
-        VALUES (tasks_seq.NEXTVAL, SYSTIMESTAMP, p_service_node_id, p_status, SYSTIMESTAMP, p_order_id, p_assignee, p_input_data);
+        VALUES (tasks_id_seq.NEXTVAL, SYSTIMESTAMP, p_service_node_id, p_status, SYSTIMESTAMP, p_order_id, p_assignee, p_input_data);
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
@@ -141,4 +141,4 @@ CREATE OR REPLACE PACKAGE BODY tasks AS
             RAISE_APPLICATION_ERROR(-20002, 'An error occurred while calculating average completion time: ' || SQLERRM);
     END calculate_avg_completion_time;
 
-END tasks;
+END tasks_pkg;

@@ -9,8 +9,6 @@ CREATE TABLE users (
     phone_number VARCHAR2(12) UNIQUE
 );
 
-CREATE INDEX idx_users_email ON users (email);
-
 CREATE SEQUENCE users_id_seq
   START WITH 100
   INCREMENT BY 1;
@@ -97,8 +95,8 @@ CREATE TABLE service_node_dependencies (
 
 CREATE TABLE orders (
     id INT PRIMARY KEY,
-    service_id INT REFERENCES services(id),
-    company_id INT REFERENCES companies(id),
+    service_id INT REFERENCES services(id) NOT NULL,
+    company_id INT REFERENCES companies(id) NOT NULL,
     created_at TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL
 );
 

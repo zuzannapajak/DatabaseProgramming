@@ -39,7 +39,6 @@ JOIN users u ON t.assignee = u.id
 JOIN orders o ON o.id = t.order_id
 JOIN companies c ON c.id = o.company_id;
 
-
 CREATE OR REPLACE VIEW employees_joined AS
 SELECT
     e.*,

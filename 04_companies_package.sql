@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE companies AS 
+CREATE OR REPLACE PACKAGE companies_pkg AS 
     -- Procedure to add a department
     PROCEDURE add_company(p_name IN companies.name%TYPE, p_nip IN companies.nip%TYPE);
 
@@ -6,14 +6,14 @@ CREATE OR REPLACE PACKAGE companies AS
     FUNCTION delete_company(p_id IN companies.id%TYPE) RETURN BOOLEAN;
 
     -- printing all relevant information about a company
-    PROCEDURE company_summary(p_company_id INT)
+    PROCEDURE company_summary(p_company_id INT);
 
     -- Calculates total revenue generated from a specified company or all companies if p_company_id is null
     FUNCTION calculate_total_revenue(p_company_id companies.id%TYPE) RETURN NUMBER;
     
-END companies;
+END companies_pkg;
 
-CREATE OR REPLACE PACKAGE BODY companies AS 
+CREATE OR REPLACE PACKAGE BODY companies_pkg AS 
     -- Procedure to add a company
     PROCEDURE add_company(
         p_name IN companies.name%TYPE,
@@ -128,4 +128,4 @@ CREATE OR REPLACE PACKAGE BODY companies AS
             RAISE_APPLICATION_ERROR(-20001, 'An unexpected error occurred: ' || SQLERRM);
     END calculate_total_revenue;
 
-END companies;
+END companies_pkg;

@@ -6,16 +6,16 @@ INSERT INTO users (id, role, first_name, last_name, email, phone_number) VALUES
 (5, 'basic', 'Sarah', 'Taylor', 'sarah.taylor@example.com', '3216549870'),
 (6, 'basic', 'Jane', 'Smith', 'jane.smith@example.com', '0987654321'),
 (7, 'basic', 'Michael', 'Johnson', 'michael.johnson@example.com', '5551234567'),
-(8, 'basic', 'Emily', 'Brown', 'emily.brown@example.com', '9876543210'),
+(8, 'basic', 'Emily', 'Brown', 'emily.brown@example.com', '9879543210'),
 (9, 'basic', 'Daniel', 'Martinez', 'daniel.martinez@example.com', '4567890123'),
 (10, 'basic', 'Christopher', 'Anderson', 'christopher.anderson@example.com', '7890123456'),
-(11, 'basic', 'Amanda', 'Thomas', 'amanda.thomas@example.com', '6543210987'),
+(11, 'basic', 'Amanda', 'Thomas', 'amanda.thomas@example.com', '6583210987'),
 (12, 'basic', 'Matthew', 'Hernandez', 'matthew.hernandez@example.com', '2345678901'),
 (13, 'basic', 'David', 'Young', 'david.young@example.com', '2109876543'),
 (14, 'basic', 'Ashley', 'King', 'ashley.king@example.com', '8765432109'),
 (15, 'basic', 'James', 'Lee', 'james.lee@example.com', '4321098765'),
 (16, 'basic', 'Jennifer', 'Walker', 'jennifer.walker@example.com', '9012345678'),
-(17, 'basic', 'Mary', 'Perez', 'mary.perez@example.com', '1234567890'),
+(17, 'basic', 'Mary', 'Perez', 'mary.perez@example.com', '1234527890'),
 (18, 'basic', 'Robert', 'Wright', 'robert.wright@example.com', '8901234567'),
 (19, 'basic', 'Linda', 'Scott', 'linda.scott@example.com', '3456789012'),
 (20, 'basic', 'John', 'Adams', 'john.adams@example.com', '6789012345');
@@ -26,13 +26,6 @@ INSERT INTO departments (id, name) VALUES
 (3, 'Human Resources'),
 (4, 'Engineering'),
 (5, 'Sales');
-
-INSERT INTO employees (id, department_id, salary) VALUES
-(1, 1, 60000.00),
-(2, 2, 75000.00),
-(3, 3, 55000.00),
-(4, 4, 80000.00),
-(5, 5, 70000.00);
 
 INSERT INTO companies (id, name, nip) VALUES
 (1, 'ABC Corporation', 1234567890),
@@ -156,8 +149,6 @@ INSERT INTO service_node_dependencies (dependent_node_id, dependency_node_id) VA
 (20, 18),
 (16, 19),
 (16, 20);
-
--- checkpoint
 
 -- orders
 

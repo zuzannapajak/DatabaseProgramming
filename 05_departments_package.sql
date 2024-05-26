@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE departments AS
+CREATE OR REPLACE PACKAGE departments_pkg AS
    -- Procedure to add a department
    PROCEDURE add_department(p_name IN departments.name%TYPE);
 
@@ -14,9 +14,9 @@ CREATE OR REPLACE PACKAGE departments AS
    -- Returns average salary for employees in a specified department or for all employees if p_department_id is null
    FUNCTION get_avg_salary(p_department_id departments.id%TYPE) RETURN NUMBER;
 
-END departments;
+END departments_pkg;
 
-CREATE OR REPLACE PACKAGE BODY departments AS
+CREATE OR REPLACE PACKAGE BODY departments_pkg AS
    -- Procedure to add a department
    PROCEDURE add_department(p_name IN departments.name%TYPE) IS
    BEGIN
@@ -123,4 +123,4 @@ CREATE OR REPLACE PACKAGE BODY departments AS
        RETURN avg_sal;
    END;
 
-END departments;
+END departments_pkg;
